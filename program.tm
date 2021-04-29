@@ -4,26 +4,13 @@
 		<author />
 		<title />
 		<description />
-		<created>20. 4. 2021 13:32:29</created>
-		<modified>20. 4. 2021 14:08:58</modified>
+		<created>29. 4. 2021 20:05:36</created>
+		<modified>29. 4. 2021 20:05:36</modified>
 	</meta>
 	<machine type="TM">
 		<tapes>
 			<tape id="0">
-				<head id="0" position="22" />
-				<cell position="-2">3</cell>
-				<cell position="-1">1</cell>
-				<cell position="0">.</cell>
-				<cell position="1">0</cell>
-				<cell position="2">2</cell>
-				<cell position="3">.</cell>
-				<cell position="4">1</cell>
-				<cell position="5">9</cell>
-				<cell position="6">8</cell>
-				<cell position="7">6</cell>
-				<cell position="8">%</cell>
-				<cell position="9">1</cell>
-				<cell position="10">-</cell>
+				<head id="0" position="18" />
 				<cell position="11">0</cell>
 				<cell position="12">1</cell>
 				<cell position="13">.</cell>
@@ -1182,54 +1169,6 @@
 			</transition>
 			<transition>
 				<from>day1</from>
-				<to>insert9</to>
-				<read>9</read>
-				<write>9_</write>
-				<move>Right</move>
-				<comment />
-			</transition>
-			<transition>
-				<from>day1</from>
-				<to>insert8</to>
-				<read>8</read>
-				<write>8_</write>
-				<move>Right</move>
-				<comment />
-			</transition>
-			<transition>
-				<from>day1</from>
-				<to>insert7</to>
-				<read>7</read>
-				<write>7_</write>
-				<move>Right</move>
-				<comment />
-			</transition>
-			<transition>
-				<from>day1</from>
-				<to>insert6</to>
-				<read>6</read>
-				<write>6_</write>
-				<move>Right</move>
-				<comment />
-			</transition>
-			<transition>
-				<from>day1</from>
-				<to>insert5</to>
-				<read>5</read>
-				<write>5_</write>
-				<move>Right</move>
-				<comment />
-			</transition>
-			<transition>
-				<from>day1</from>
-				<to>insert4</to>
-				<read>4</read>
-				<write>4_</write>
-				<move>Right</move>
-				<comment />
-			</transition>
-			<transition>
-				<from>day1</from>
 				<to>insert3</to>
 				<read>3</read>
 				<write>3_</write>
@@ -1659,12 +1598,7 @@ f(findDay, .) = (findDay, _., L)
 f(findDay, CISLA) = (day1, CISLA, L)
 f(findDay, _.) = (day2, ._, L)
 
-f(day1, 9) = (insert9, 9_, R)
-f(day1, 8) = (insert8, 8_, R)
-f(day1, 7) = (insert7, 7_, R)
-f(day1, 6) = (insert6, 6_, R)
-f(day1, 5) = (insert5, 5_, R)
-f(day1, 4) = (insert4, 4_, R)
+
 f(day1, 3) = (insert3, 3_, R)
 f(day1, 2) = (insert2, 2_, R)
 f(day1, 1) = (insert1, 1_, R)
@@ -1703,9 +1637,6 @@ f(clear, 6_) = (clear, 6, L)
 f(clear, 7_) = (clear, 7, L)
 f(clear, 8_) = (clear, 8, L)
 f(clear, 9_) = (clear, 9, L)
-
-
-
 </code>
 	</machine>
 </turingmachine>
