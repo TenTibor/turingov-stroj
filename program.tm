@@ -4,26 +4,39 @@
 		<author />
 		<title />
 		<description />
-		<created>29. 4. 2021 20:05:36</created>
-		<modified>29. 4. 2021 20:05:36</modified>
+		<created>6. 5. 2021 19:07:22</created>
+		<modified>6. 5. 2021 19:28:22</modified>
 	</meta>
 	<machine type="TM">
 		<tapes>
 			<tape id="0">
-				<head id="0" position="18" />
-				<cell position="11">0</cell>
-				<cell position="12">1</cell>
+				<head id="0" position="13" />
+				<cell position="11">2</cell>
+				<cell position="12">0</cell>
 				<cell position="13">.</cell>
-				<cell position="14">1</cell>
-				<cell position="15">2</cell>
+				<cell position="14">0</cell>
+				<cell position="15">3</cell>
 				<cell position="16">.</cell>
-				<cell position="17">2</cell>
-				<cell position="18">0</cell>
-				<cell position="19">0</cell>
-				<cell position="20">0</cell>
+				<cell position="17">1</cell>
+				<cell position="18">9</cell>
+				<cell position="19">8</cell>
+				<cell position="20">6</cell>
 				<cell position="21">%</cell>
-				<cell position="22">1</cell>
-				<cell position="23">$</cell>
+				<cell position="22">0</cell>
+				<cell position="23">-</cell>
+				<cell position="24">2</cell>
+				<cell position="25">0</cell>
+				<cell position="26">.</cell>
+				<cell position="27">0</cell>
+				<cell position="28">3</cell>
+				<cell position="29">.</cell>
+				<cell position="30">1</cell>
+				<cell position="31">9</cell>
+				<cell position="32">8</cell>
+				<cell position="33">6</cell>
+				<cell position="34">%</cell>
+				<cell position="35">1</cell>
+				<cell position="36">$</cell>
 			</tape>
 		</tapes>
 		<states>
@@ -244,6 +257,12 @@
 				<comment />
 				<x>40</x>
 				<y>190</y>
+			</state>
+			<state id="checkOneRecordDash">
+				<name>checkOneRecordDash</name>
+				<comment />
+				<x>40</x>
+				<y>40</y>
 			</state>
 		</states>
 		<transitions>
@@ -1305,9 +1324,25 @@
 			</transition>
 			<transition>
 				<from>findRecord</from>
-				<to>clear</to>
+				<to>checkOneRecordDash</to>
 				<read>-</read>
 				<write>Blank</write>
+				<move>Left</move>
+				<comment />
+			</transition>
+			<transition>
+				<from>checkOneRecordDash</from>
+				<to>clear</to>
+				<read>-_</read>
+				<write>Blank</write>
+				<move>Left</move>
+				<comment />
+			</transition>
+			<transition>
+				<from>checkOneRecordDash</from>
+				<to>clear</to>
+				<read>CISLA</read>
+				<write>CISLA</write>
 				<move>Left</move>
 				<comment />
 			</transition>
@@ -1317,14 +1352,6 @@
 				<read>OK</read>
 				<write>OK</write>
 				<move>Left</move>
-				<comment />
-			</transition>
-			<transition>
-				<from>clear</from>
-				<to>qf</to>
-				<read>Blank</read>
-				<write>Blank</write>
-				<move>Right</move>
 				<comment />
 			</transition>
 			<transition>
@@ -1431,6 +1458,14 @@
 				<move>Left</move>
 				<comment />
 			</transition>
+			<transition>
+				<from>clear</from>
+				<to>qf</to>
+				<read>Blank</read>
+				<write>Blank</write>
+				<move>Right</move>
+				<comment />
+			</transition>
 		</transitions>
 		<code>ALL_TO_END = {0,1,2,3,4,5,6,7,8,9, 0_,1_,2_,3_,4_,5_,6_,7_,8_,9_, ., %, #, -, $, ._, %_, _., _%}
 ALL_FOR_# = {0,1,2,3,4,5,6,7,8,9, 0_,1_,2_,3_,4_,5_,6_,7_,8_,9_, ., %, #, -, $, ._, %_, -_, _.}
@@ -1441,7 +1476,7 @@ EVEN = {0,2,4,6,8}
 ODD = {1,3,5,7,9}
 OK = {0,1,2,3,4,5,6,7,8,9,-,%,.,#,$}
 
-// Vlozit cislo na koniec pasky
+// Prechody na vlozenie vsetkych cisiel a znakov
 f(insertDash, GROUP_DASH) = (insertDash, GROUP_DASH, R)
 f(insertDash, -) = (insertDash, -_, R)
 f(insertDash, Blank) = (start, -, L)
@@ -1481,38 +1516,39 @@ f(insert8, Blank) = (start, 8, L)
 f(insert9, ALL_TO_END) = (insert9, ALL_TO_END, R)
 f(insert9, Blank) = (start, 9, L)
 
-// Posun na zaciatok pasky
+// Posunutie na zaciatok pasky pri spusteni programu
 f(q0, ALL_TO_END) = (start, ALL_TO_END, L)
 f(start, ALL_TO_END) = (start, ALL_TO_END, L)
 f(start, Blank) = (findRecord, Blank, R)
 
-// Dalsi prvok
+// Prechod na dalsi zaznam prvku alebo vložení pomlčky po dokončeni záznamu
 f(start, _%_) = (insertDash, _%_, R)
 f(start, -_) = (findRecord, -_, R)
 
-// Posun na udaj zaznamu
+// Prechádzanie záznamom po percento, ktoré symbolizuje stav prepisovania a podľa toho vyberie ďalšiu akciu
 f(findRecord, CISLA) = (findRecord, CISLA, R)
 f(findRecord, podCISLA) = (findRecord, podCISLA, R)
 f(findRecord, #) = (findRecord, #, R)
 f(findRecord, .) = (findRecord, ., R)
 f(findRecord, ._) = (findRecord, ._, R)
 f(findRecord, _.) = (findRecord, _., R)
-  // vybrat rok
+  // vybrat a prepísať rok
 f(findRecord, %) = (findYear, %, L)
-  // vybrat mesiac
+  // vybrat a prepísať mesiac
 f(findRecord, %_) = (findMonth, _%, L)
-  // vybrat den
+  // vybrat a prepísať den
 f(findRecord, _%) = (findDay, _%, L)
-  // hotovy zaznam
+  // celý záznam je prepísany
 f(findRecord, _%_) = (qf, _%_, R)
 
 
-// Posun na zaciatok roka alebo uz 4tu cifru
+// Posun na zaciatok roka a prepísanie 3 a 4tej cifry
 f(findYear, CISLA) = (findYear, CISLA, L)
 f(findYear, .) = (skipMillennium, ._, R)
 f(findYear, podCISLA) = (theYear, podCISLA, R)
 
-// Preskoc tisicrocie a storocie
+// Preskocenie tisicrocia a storocia
+// Ak je tisícrocie väčšie ako 2, nastane chyba
 f(skipMillennium, 0) = (skipCentury, 0_, R)
 f(skipMillennium, 1) = (skipCentury, 1_, R)
 f(skipMillennium, 2) = (skipCentury, 2_, R)
@@ -1528,6 +1564,7 @@ f(skipCentury, 2) = (decade, 2_, R)
 f(skipCentury, 1) = (decade, 1_, R)
 f(skipCentury, 0) = (decade, 0_, R)
 
+// 3ta cifra roka
 f(decade, 9) = (insert9, 9_, R)
 f(decade, 8) = (insert8, 8_, R)
 f(decade, 7) = (insert7, 7_, R)
@@ -1559,7 +1596,7 @@ f(findMonth, ._) = (findMonth, _., L)
 f(findMonth, .) = (1month, ., R)
 f(findMonth, _.) = (2month, ._, L)
 
-// prva cifra mesiaca je 0
+// ak prva cifra mesiaca je 0, treba skontrolovat cislo za % a podla toho vypisať na pásku 0 alebo 1
 f(1month, 0) = (1month0, 0_, R)
 f(1month0, CISLA) = (1month0, CISLA, R)
 f(1month0, podCISLA) = (1month0, podCISLA, R)
@@ -1569,7 +1606,7 @@ f(1month0, %_) = (1month0c, %_, R)
 f(1month0c, 0) = (insert0, 0, R)
 f(1month0c, 1) = (insert5, 1, R)
 
-// druha cifra mesiaca je 1
+// ak prva cifra mesiaca je 1, treba skontrolovat cislo za % a podla toho vypisať na pásku 0 alebo 1
 f(1month, 1) = (1month1, 1_, R)
 f(1month1, CISLA) = (1month1, CISLA, R)
 f(1month1, podCISLA) = (1month1, podCISLA, R)
@@ -1579,7 +1616,7 @@ f(1month1, %_) = (1month1c, %_, R)
 f(1month1c, 0) = (insert1, 0, R)
 f(1month1c, 1) = (insert6, 1, R)
 
-// druha cifra mesiaca
+// vypis druhej cifra mesiaca
 f(2month, 9) = (insert9, 9_, R)
 f(2month, 8) = (insert8, 8_, R)
 f(2month, 7) = (insert7, 7_, R)
@@ -1591,19 +1628,20 @@ f(2month, 2) = (insert2, 2_, R)
 f(2month, 1) = (insert1, 1_, R)
 f(2month, 0) = (insert0, 0_, R)
 
-// Posun na koniec dna
+// Posun na koniec dna v zázname
 f(findDay, podCISLA) = (findDay, podCISLA, L)
 f(findDay, ._) = (findDay, ._, L)
 f(findDay, .) = (findDay, _., L)
 f(findDay, CISLA) = (day1, CISLA, L)
 f(findDay, _.) = (day2, ._, L)
 
-
+// vypis prvej cifry dna (max 3)
 f(day1, 3) = (insert3, 3_, R)
 f(day1, 2) = (insert2, 2_, R)
 f(day1, 1) = (insert1, 1_, R)
 f(day1, 0) = (insert0, 0_, R)
 
+// vypis druhej cifry dna
 f(day2, 9) = (insert9, 9, R)
 f(day2, 8) = (insert8, 8, R)
 f(day2, 7) = (insert7, 7, R)
@@ -1615,15 +1653,16 @@ f(day2, 2) = (insert2, 2, R)
 f(day2, 1) = (insert1, 1, R)
 f(day2, 0) = (insert0, 0, R)
 
-// Datum je pridany, pridaj hashtag
+// Ked je pridany cely datum, prida sa hashtag a cislo podla toho, ci je posledna cifra parna alebo neparna
 f(day1, podCISLA) = (checkDay2, podCISLA, R)
 f(checkDay2, EVEN) = (insert#0, EVEN, R)
 f(checkDay2, ODD) = (insert#1, ODD, R)
 
-// Ukoncenie a vycistenie pasky
-f(findRecord, -) = (clear, Blank, L)
+// Ked nieje ziadny dalsi zaznam, na paske sa vratia upravene cisla do povodneho stavu
+f(findRecord, -) = (checkOneRecordDash, Blank, L)
+f(checkOneRecordDash, -_) = (clear, Blank, L) // pre vymazanie pomlcky za jednym zaznamom
+f(checkOneRecordDash, CISLA) = (clear, CISLA, L)
 f(clear, OK) = (clear, OK, L)
-f(clear, Blank) = (qf, Blank, R)
 f(clear, -_) = (clear, -, L)
 f(clear, ._) = (clear, ., L)
 f(clear, _%_) = (clear, %, L)
@@ -1637,6 +1676,6 @@ f(clear, 6_) = (clear, 6, L)
 f(clear, 7_) = (clear, 7, L)
 f(clear, 8_) = (clear, 8, L)
 f(clear, 9_) = (clear, 9, L)
-</code>
+f(clear, Blank) = (qf, Blank, R) // Ukoncenie programu po prichode na zaciatok pasky</code>
 	</machine>
 </turingmachine>
